@@ -18,5 +18,10 @@ namespace Core.Utilities.Business
             }
             return null;
         }
+
+        public static IResult Run(IResult result, object checkIfProductNameExists)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

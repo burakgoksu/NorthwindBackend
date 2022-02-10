@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Business.Abstract;
 using Business.Constant;
+using Core.Aspects.Autofac.Logging;
+using Core.Aspects.Autofac.Performance;
+using Core.CrossCuttingConcerns.Logging.Log4Net.Loggers;
 using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using Core.Utilities.Security.Hashing;
@@ -11,6 +14,7 @@ using Entities.Dtos;
 
 namespace Business.Concrete
 {
+    [LogAspect(typeof(DatabaseLogger))]
     public class AuthManager : IAuthService
     {
         private IUserService _userService;
@@ -22,6 +26,7 @@ namespace Business.Concrete
             _tokenHelper = tokenHelper;
         }
 
+        [PerformanceAspect(5)]
         public IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string password)
         {
             byte[] passwordHash, passwordSalt;
@@ -39,6 +44,7 @@ namespace Business.Concrete
             return new SuccessDataResult<User>(user, Messages.UserRegistered);
         }
 
+        [PerformanceAspect(5)]
         public IDataResult<User> Login(UserForLoginDto userForLoginDto)
         {
             var userToCheck = _userService.GetByMail(userForLoginDto.Email);
@@ -55,6 +61,7 @@ namespace Business.Concrete
             return new SuccessDataResult<User>(userToCheck, Messages.SuccessfulLogin);
         }
 
+        [PerformanceAspect(5)]
         public IResult UserExists(string email)
         {
             if (_userService.GetByMail(email) != null)
@@ -64,6 +71,7 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        [PerformanceAspect(5)]
         public IDataResult<AccessToken> CreateAccessToken(User user)
         {
             var claims = _userService.GetClaims(user);

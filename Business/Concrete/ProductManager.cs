@@ -21,6 +21,7 @@ using System.Threading;
 
 namespace Business.Concrete
 {
+    [LogAspect(typeof(DatabaseLogger))]
     public class ProductManager : IProductService
     {
         private IProductDal _productDal;
@@ -32,22 +33,23 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
 
+        [PerformanceAspect(5)]
         [ValidationAspect(typeof(ProductValidator), Priority = 1)]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
-
-
             IResult result = BusinessRules.Run(CheckIfProductNameExists(product.ProductName),CheckIfCategoryIsEnabled());
             if (result != null)
             {
                 return result;
             }
+
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
         }
 
-        private IResult CheckIfProductNameExists(string productName)
+        [PerformanceAspect(5)]
+        public IResult CheckIfProductNameExists(string productName)
         {
             if (_productDal.Get(p => p.ProductName == productName) != null)
             {
@@ -56,22 +58,26 @@ namespace Business.Concrete
             return new SuccessResult();
         }
 
+        [PerformanceAspect(5)]
         private IResult CheckIfCategoryIsEnabled()
         {
             var result = _categoryService.GetList();
-            if (result.Data.Count<10)
+            if (result.Data.Count>100)
             {
                 return new ErrorResult(Messages.CategoryRule);
             }
             return new SuccessResult();
         }
 
+        [PerformanceAspect(5)]
         public IResult Delete(Product product)
         {
             _productDal.Delete(product);
             return new SuccessResult(Messages.ProductDeleted);
         }
 
+        [PerformanceAspect(5)]
+        [CacheAspect(duration: 10)]
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
@@ -79,27 +85,38 @@ namespace Business.Concrete
 
 
         [PerformanceAspect(5)]
+        [CacheAspect(duration: 10)]
         public IDataResult<List<Product>> GetList()
         {
             Thread.Sleep(5000);
             return new SuccessDataResult<List<Product>>(_productDal.GetList().ToList());
         }
 
-        //[SecuredOperation("Product.List,Admin")]
+        [PerformanceAspect(5)]
+        [SecuredOperation("Product.List,Admin")]
         [CacheAspect(duration: 10)]
-        [LogAspect(typeof(DatabaseLogger))]
         public IDataResult<List<Product>> GetListByCategory(int categoryId)
         {
             return new SuccessDataResult<List<Product>>(_productDal.GetList(p => p.CategoryId == categoryId).ToList());
         }
 
+        [PerformanceAspect(5)]
+        [ValidationAspect(typeof(ProductValidator), Priority = 1)]
         public IResult Update(Product product)
         {
+            IResult result = BusinessRules.Run(CheckIfProductNameExists(product.ProductName), CheckIfCategoryIsEnabled());
+            if (result != null)
+            {
+                return result;
+            }
+
             _productDal.Update(product);
             return new SuccessResult(Messages.ProductUpdated);
         }
 
+        [PerformanceAspect(5)]
         [TransactionScopeAspect]
+        [SecuredOperation("Product.Delete,Admin")]
         public IResult TransactionalOperation(Product product)
         {
             _productDal.Update(product);

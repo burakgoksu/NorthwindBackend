@@ -8,21 +8,24 @@ namespace Business.Constant
 {
     public static class Messages
     {
-        public static string ProductAdded = "Ürün başarıyla eklendi";
-        public static string ProductDeleted = "Ürün başarıyla silindi";
-        public static string ProductUpdated = "Ürün başarıyla güncellendi";
-        public static string CategoryAdded = "Kategori başarıyla eklendi";
-        public static string CategoryDeleted = "Kategori başarıyla silindi";
-        public static string CategoryUpdated = "Kategori başarıyla güncellendi";
-        public static string UserNotFound = "Kullanıcı Bulunamadı";
-        public static string PasswordError = "Şifre Hatalı";
-        public static string SuccessfulLogin = "Giriş Başarılı";
-        public static string UserAlreadyExists = "Kullanıcı Kayıtlı";
-        public static string UserRegistered = "Kullanıcı Başarıyla Kaydedildi";
-        public static string AccessTokenCreated = "Access Token Başarıyla Oluşturuldu";
-        public static string AuthorizationDenied = "Yetkiniz Yok";
-        public static string ProductNameAlreadyExists = "Ürün ismi mevcut";
+        public static string ProductAdded = "Product was added successfully";
+        public static string ProductDeleted = "Product was deleted successfully";
+        public static string ProductUpdated = "Product was updated successfully";
+        public static string CategoryAdded = "Category was added successfully";
+        public static string CategoryDeleted = "Category was deleted successfullyi";
+        public static string CategoryUpdated = "Category was updated successfully";
+        public static string UserNotFound = "User Not Found";
+        public static string PasswordError = "Password Error";
+        public static string SuccessfulLogin = "Login successful";
+        public static string UserAlreadyExists = "User already registered ";
+        public static string UserRegistered = "User was registered successfully";
+        public static string AccessTokenCreated = "Access Token was created successfully";
+        public static string AuthorizationDenied = "You are not authorized";
+        public static string ProductNameAlreadyExists = "Product name already exists";
         public static string CategoryRule = "Category Rule";
+        public static string CategoryNameAlreadyExists = "Category name already exists";
+        public static string EmailAlreadyExists = "This Email already exists";
+        public static string UserAdded = "User was added successfully";
     }
 }
 
